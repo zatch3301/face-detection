@@ -1,8 +1,11 @@
 import cv2
 import sys
+import numpy as np
 
 cascPath = cascPath = "haarcascade_frontalface_default.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
+cascEyePath = cascEyePath = "haarcascade_eye.xml"
+eye_cascade = cv2.CascadeClassifier(cascEyePath)
 
 video_capture = cv2.VideoCapture(0)
 
@@ -19,10 +22,21 @@ while True:
         minSize=(30, 30),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
+    eyes = eye_cascade.detectMultiScale(
+    	gray,
+    	scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(30, 30),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
 
     # Draw a rectangle around the faces
     for (x, y, w, h) in faces:
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (50, 50, 50), 2)
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
+    	# Draw a rectangle around the eyes
+        for (ex,ey,ew,eh) in eyes:
+            cv2.rectangle(frame,(ex,ey),(ex+ew,ey+eh),(50,50,50),2)
 
     # Display the resulting frame
     cv2.imshow('Video', frame)
